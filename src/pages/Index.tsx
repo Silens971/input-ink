@@ -1,12 +1,14 @@
- import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
  import { useMouseRecorder } from '@/hooks/useMouseRecorder';
  import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useMacroEditor } from '@/hooks/useMacroEditor';
  import { RecordingCanvas } from '@/components/RecordingCanvas';
  import { ControlPanel } from '@/components/ControlPanel';
  import { TrajectoryViewer } from '@/components/TrajectoryViewer';
  import { EditPanel } from '@/components/EditPanel';
- import { ExportPanel } from '@/components/ExportPanel';
- import { RecordingData } from '@/types/recording';
+import { TimeEditor } from '@/components/TimeEditor';
+import { LiveCodePreview } from '@/components/LiveCodePreview';
+import { useState } from 'react';
  import { MousePointer2, Crosshair } from 'lucide-react';
  
  const Index = () => {
@@ -22,7 +24,23 @@
      setRecordingData,
    } = useMouseRecorder();
  
-   const [editedData, setEditedData] = useState<RecordingData | null>(null);
+  const {
+    editSettings,
+    timeSettings,
+    segments,
+    selectedSegment,
+    derivedData,
+    initializeFromRecording,
+    updateEditSetting,
+    updateTimeMultiplier,
+    setTargetDuration,
+    resetToOriginal,
+    addSegment,
+    updateSegmentMultiplier,
+    removeSegment,
+    setSelectedSegment,
+  } = useMacroEditor(recordingData);
+
    const [elapsedTime, setElapsedTime] = useState(0);
  
    const { shortcuts, isConfiguring, setIsConfiguring } = useKeyboardShortcuts(
@@ -44,11 +62,12 @@
      return () => clearInterval(interval);
    }, [state]);
  
-   const handleApplyEdits = (data: RecordingData) => {
-     setEditedData(data);
-   };
- 
-   const displayData = editedData || recordingData;
+  // Initialize editor when recording completes
+  useEffect(() => {
+    if (state === 'completed' && recordingData) {
+      initializeFromRecording(recordingData);
+    }
+  }, [state, recordingData, initializeFromRecording]);
  
    return (
      <div className="min-h-screen bg-background text-foreground">
@@ -101,9 +120,26 @@
              </div>
  
              {/* Trajectory Viewer */}
-             {state === 'completed' && displayData && displayData.points.length > 1 && (
-               <TrajectoryViewer recordingData={displayData} />
+              {state === 'completed' && derivedData && derivedData.points.length > 1 && (
+                <TrajectoryViewer 
+                  recordingData={{
+                    points: derivedData.points,
+                    startTime: recordingData?.startTime || 0,
+                    endTime: recordingData?.endTime || 0,
+                    duration: derivedData.duration,
+                  }} 
+                />
              )}
+
+              {/* Live Code Preview - always visible when completed */}
+              {state === 'completed' && derivedData && (
+                <LiveCodePreview
+                  codeAHK={derivedData.codeAHK}
+                  codeLua={derivedData.codeLua}
+                  duration={derivedData.duration}
+                  pointCount={derivedData.pointCount}
+                />
+              )}
            </div>
  
            {/* Right: Controls */}
@@ -121,13 +157,27 @@
              />
  
              {/* Edit and Export panels */}
-             {state === 'completed' && recordingData && recordingData.points.length > 0 && (
+              {state === 'completed' && derivedData && (
                <>
+                  {/* Time Editor */}
+                  <TimeEditor
+                    timeSettings={timeSettings}
+                    segments={segments}
+                    selectedSegment={selectedSegment}
+                    onUpdateMultiplier={updateTimeMultiplier}
+                    onSetTargetDuration={setTargetDuration}
+                    onResetToOriginal={resetToOriginal}
+                    onUpdateSegmentMultiplier={updateSegmentMultiplier}
+                    onSelectSegment={setSelectedSegment}
+                    onRemoveSegment={removeSegment}
+                  />
+
+                  {/* Space Editor */}
                  <EditPanel
-                   recordingData={recordingData}
-                   onApplyEdits={handleApplyEdits}
+                    editSettings={editSettings}
+                    onUpdateSetting={updateEditSetting}
+                    onReset={resetToOriginal}
                  />
-                 <ExportPanel recordingData={displayData || recordingData} />
                </>
              )}
  
