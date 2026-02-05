@@ -25,3 +25,34 @@
    trimStart: number;
    trimEnd: number;
  }
+
+export interface TimeSettings {
+  timeMultiplier: number;
+  originalDuration: number;
+  adjustedDuration: number;
+}
+
+export interface SegmentSelection {
+  startIndex: number;
+  endIndex: number;
+  timeMultiplier: number;
+}
+
+export interface MacroState {
+  originalPoints: MousePoint[];
+  editedPoints: MousePoint[];
+  originalDuration: number;
+  editSettings: EditSettings;
+  timeSettings: TimeSettings;
+  segments: SegmentSelection[];
+  selectedSegment: number | null;
+}
+
+export interface DerivedMacroData {
+  points: MousePoint[];
+  duration: number;
+  pointCount: number;
+  averageSpeed: number;
+  codeAHK: string;
+  codeLua: string;
+}
