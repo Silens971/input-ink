@@ -48,8 +48,8 @@
      }
    };
  
-   return (
-     <div className="bg-card rounded-xl p-6 space-y-6 border border-border fade-in">
+    return (
+      <div className="glass-card rounded-2xl p-6 space-y-6 fade-in">
        <div className="flex items-center justify-between">
          <h3 className="font-semibold text-lg flex items-center gap-2">
            <Timer className="w-5 h-5 text-primary" />
@@ -61,19 +61,19 @@
          </Button>
        </div>
  
-       {/* Time comparison */}
-       <div className="grid grid-cols-2 gap-4">
-         <div className="p-4 bg-secondary/50 rounded-lg text-center">
-           <div className="text-xs text-muted-foreground mb-1">Tempo Original</div>
-           <div className="text-xl font-mono font-bold">
-             {formatDuration(timeSettings.originalDuration)}
-           </div>
-         </div>
-         <div className={cn(
-           "p-4 rounded-lg text-center transition-all duration-300",
-           timeSettings.timeMultiplier !== 1 
-             ? "bg-primary/20 ring-2 ring-primary/50" 
-             : "bg-secondary/50"
+        {/* Time comparison */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="p-4 glass rounded-xl text-center">
+            <div className="text-xs text-muted-foreground mb-1">Tempo Original</div>
+            <div className="text-xl font-mono font-bold">
+              {formatDuration(timeSettings.originalDuration)}
+            </div>
+          </div>
+          <div className={cn(
+            "p-4 rounded-xl text-center transition-all duration-300 glass",
+            timeSettings.timeMultiplier !== 1 
+              ? "ring-2 ring-primary/50" 
+              : ""
          )}>
            <div className="text-xs text-muted-foreground mb-1">Tempo Ajustado</div>
            <div className={cn(
@@ -156,9 +156,9 @@
        </div>
  
        {/* Segments (advanced) */}
-       {segments.length > 0 && (
-         <div className="space-y-3 pt-4 border-t border-border">
-           <span className="text-sm font-medium">Segmentos Selecionados</span>
+        {segments.length > 0 && (
+          <div className="space-y-3 pt-4 border-t border-border/50">
+            <span className="text-sm font-medium">Segmentos Selecionados</span>
            <div className="space-y-2">
              {segments.map((seg, index) => (
                <div

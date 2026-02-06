@@ -38,18 +38,18 @@
      return `${seconds}.${Math.floor(remainingMs / 100)}s`;
    };
  
-   return (
-     <div className="bg-card rounded-xl p-6 space-y-6 border border-border">
-       {/* Status */}
-       <div className="flex items-center justify-between">
-         <div className="flex items-center gap-3">
-           <div
-             className={cn(
-               'w-3 h-3 rounded-full transition-colors',
-               state === 'idle' && 'bg-muted-foreground',
-               state === 'recording' && 'bg-recording recording-pulse',
-               state === 'completed' && 'bg-success'
-             )}
+    return (
+      <div className="glass-card rounded-2xl p-6 space-y-6">
+        {/* Status */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div
+              className={cn(
+                'w-3 h-3 rounded-full transition-colors',
+                state === 'idle' && 'bg-muted-foreground',
+                state === 'recording' && 'bg-recording recording-pulse',
+                state === 'completed' && 'bg-success'
+              )}
            />
            <span className="font-medium text-lg">
              {state === 'idle' && 'Pronto para gravar'}
@@ -112,42 +112,42 @@
          )}
        </div>
  
-       {/* Keyboard shortcuts */}
-       <div className="border-t border-border pt-4">
-         <div className="flex items-center gap-2 mb-3 text-muted-foreground">
-           <Keyboard className="w-4 h-4" />
-           <span className="text-sm font-medium">Atalhos de Teclado</span>
-         </div>
-         
-         <div className="grid grid-cols-2 gap-3">
-           <button
-             onClick={() => onConfigureShortcut('start')}
-             className={cn(
-               'flex items-center justify-between p-3 rounded-lg transition-all',
-               'bg-secondary/50 hover:bg-secondary',
-               isConfiguring === 'start' && 'ring-2 ring-primary'
-             )}
-           >
-             <span className="text-sm text-muted-foreground">Iniciar</span>
-             <kbd className="px-2 py-1 bg-muted rounded text-sm font-mono">
-               {isConfiguring === 'start' ? '...' : shortcuts.startRecording}
-             </kbd>
+        {/* Keyboard shortcuts */}
+        <div className="border-t border-border/50 pt-4">
+          <div className="flex items-center gap-2 mb-3 text-muted-foreground">
+            <Keyboard className="w-4 h-4" />
+            <span className="text-sm font-medium">Atalhos de Teclado</span>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => onConfigureShortcut('start')}
+              className={cn(
+                'flex items-center justify-between p-3 rounded-xl transition-all',
+                'glass-button',
+                isConfiguring === 'start' && 'ring-2 ring-primary'
+              )}
+            >
+              <span className="text-sm text-muted-foreground">Iniciar</span>
+              <kbd className="px-2 py-1 glass rounded-lg text-sm font-mono">
+                {isConfiguring === 'start' ? '...' : shortcuts.startRecording}
+              </kbd>
            </button>
            
-           <button
-             onClick={() => onConfigureShortcut('stop')}
-             className={cn(
-               'flex items-center justify-between p-3 rounded-lg transition-all',
-               'bg-secondary/50 hover:bg-secondary',
-               isConfiguring === 'stop' && 'ring-2 ring-primary'
-             )}
-           >
-             <span className="text-sm text-muted-foreground">Finalizar</span>
-             <kbd className="px-2 py-1 bg-muted rounded text-sm font-mono">
-               {isConfiguring === 'stop' ? '...' : shortcuts.stopRecording}
-             </kbd>
-           </button>
-         </div>
+            <button
+              onClick={() => onConfigureShortcut('stop')}
+              className={cn(
+                'flex items-center justify-between p-3 rounded-xl transition-all',
+                'glass-button',
+                isConfiguring === 'stop' && 'ring-2 ring-primary'
+              )}
+            >
+              <span className="text-sm text-muted-foreground">Finalizar</span>
+              <kbd className="px-2 py-1 glass rounded-lg text-sm font-mono">
+                {isConfiguring === 'stop' ? '...' : shortcuts.stopRecording}
+              </kbd>
+            </button>
+          </div>
          
          <p className="text-xs text-muted-foreground mt-2">
            Clique em um atalho para configurar

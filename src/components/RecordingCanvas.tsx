@@ -115,15 +115,15 @@
        );
      };
  
-     return (
-       <div
-         ref={ref}
-         className={cn(
-           'relative rounded-xl overflow-hidden transition-all duration-300',
-           'bg-canvas border-2',
-           state === 'recording' ? 'border-recording glow-recording' : 'border-border'
-         )}
-       >
+      return (
+        <div
+          ref={ref}
+          className={cn(
+            'relative rounded-2xl overflow-hidden transition-all duration-300',
+            'bg-canvas border-2',
+            state === 'recording' ? 'border-recording glow-recording' : 'border-border/50'
+          )}
+        >
          <svg
            width={canvasSize}
            height={canvasSize}
@@ -168,20 +168,20 @@
            {renderCurrentPoint()}
          </svg>
  
-         {/* Recording indicator */}
-         {state === 'recording' && (
-           <div className="absolute top-4 left-4 flex items-center gap-2 bg-recording/20 px-3 py-1.5 rounded-full">
-             <div className="w-2 h-2 rounded-full bg-recording recording-pulse" />
-             <span className="text-sm font-medium text-recording">Gravando...</span>
-           </div>
-         )}
+          {/* Recording indicator */}
+          {state === 'recording' && (
+            <div className="absolute top-4 left-4 flex items-center gap-2 glass px-3 py-1.5 rounded-full">
+              <div className="w-2 h-2 rounded-full bg-recording recording-pulse" />
+              <span className="text-sm font-medium text-recording">Gravando...</span>
+            </div>
+          )}
  
-         {/* Position display */}
-         {state === 'recording' && (
-           <div className="absolute bottom-4 right-4 font-mono text-sm text-muted-foreground bg-card/80 px-3 py-1.5 rounded-lg backdrop-blur">
-             X: {currentPosition.x.toFixed(0)} | Y: {currentPosition.y.toFixed(0)}
-           </div>
-         )}
+          {/* Position display */}
+          {state === 'recording' && (
+            <div className="absolute bottom-4 right-4 font-mono text-sm text-muted-foreground glass px-3 py-1.5 rounded-xl">
+              X: {currentPosition.x.toFixed(0)} | Y: {currentPosition.y.toFixed(0)}
+            </div>
+          )}
        </div>
      );
    }

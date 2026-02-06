@@ -1,176 +1,257 @@
- @tailwind base;
- @tailwind components;
- @tailwind utilities;
- 
- /* Mouse Motion Recorder - Design System
-    Dark, technical, modern interface inspired by developer tools
-    All colors in HSL format */
- 
- @layer base {
-   :root {
-     /* Dark theme as default */
-     --background: 220 20% 7%;
-     --foreground: 210 20% 95%;
- 
-     --card: 220 18% 10%;
-     --card-foreground: 210 20% 95%;
- 
-     --popover: 220 18% 12%;
-     --popover-foreground: 210 20% 95%;
- 
-     /* Cyan/Teal accent for primary actions */
-     --primary: 185 75% 50%;
-     --primary-foreground: 220 20% 7%;
- 
-     --secondary: 220 15% 18%;
-     --secondary-foreground: 210 20% 85%;
- 
-     --muted: 220 15% 15%;
-     --muted-foreground: 215 15% 55%;
- 
-     --accent: 185 60% 40%;
-     --accent-foreground: 210 20% 95%;
- 
-     /* Recording state - vibrant cyan glow */
-     --recording: 185 90% 55%;
-     --recording-glow: 185 100% 60%;
- 
-     /* Success state */
-     --success: 145 70% 45%;
-     --success-foreground: 145 70% 95%;
- 
-     /* Grid and canvas */
-     --grid: 220 15% 20%;
-     --grid-accent: 220 15% 30%;
-     --canvas: 220 20% 8%;
-     --trajectory: 185 90% 60%;
-     --trajectory-glow: 185 100% 70%;
-     --center-point: 45 90% 55%;
- 
-     --destructive: 0 70% 50%;
-     --destructive-foreground: 0 0% 100%;
- 
-     --border: 220 15% 18%;
-     --input: 220 15% 15%;
-     --ring: 185 75% 50%;
- 
-     --radius: 0.75rem;
- 
-     /* Shadows and effects */
-     --shadow-glow: 0 0 30px hsl(185 90% 55% / 0.3);
-     --shadow-card: 0 4px 24px hsl(220 20% 0% / 0.4);
-   }
- 
-   .light {
-     --background: 210 20% 98%;
-     --foreground: 220 20% 10%;
-     --card: 0 0% 100%;
-     --card-foreground: 220 20% 10%;
-     --popover: 0 0% 100%;
-     --popover-foreground: 220 20% 10%;
-     --primary: 185 75% 40%;
-     --primary-foreground: 0 0% 100%;
-     --secondary: 220 15% 92%;
-     --secondary-foreground: 220 20% 20%;
-     --muted: 220 15% 95%;
-     --muted-foreground: 215 15% 45%;
-     --accent: 185 60% 35%;
-     --accent-foreground: 0 0% 100%;
-     --recording: 185 90% 45%;
-     --recording-glow: 185 100% 50%;
-     --success: 145 70% 40%;
-     --success-foreground: 0 0% 100%;
-     --grid: 220 15% 88%;
-     --grid-accent: 220 15% 80%;
-     --canvas: 220 15% 96%;
-     --trajectory: 185 90% 45%;
-     --trajectory-glow: 185 100% 55%;
-     --center-point: 45 90% 50%;
-     --destructive: 0 70% 50%;
-     --destructive-foreground: 0 0% 100%;
-     --border: 220 15% 88%;
-     --input: 220 15% 92%;
-     --ring: 185 75% 40%;
-   }
- }
- 
- @layer base {
-   * {
-     @apply border-border;
-   }
- 
-   body {
-     @apply bg-background text-foreground antialiased;
-     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-   }
- 
-   /* Custom scrollbar */
-   ::-webkit-scrollbar {
-     width: 8px;
-     height: 8px;
-   }
- 
-   ::-webkit-scrollbar-track {
-     background: hsl(var(--muted));
-     border-radius: 4px;
-   }
- 
-   ::-webkit-scrollbar-thumb {
-     background: hsl(var(--muted-foreground) / 0.3);
-     border-radius: 4px;
-   }
- 
-   ::-webkit-scrollbar-thumb:hover {
-     background: hsl(var(--muted-foreground) / 0.5);
-   }
- }
- 
- @layer utilities {
-   /* Recording pulse animation */
-   .recording-pulse {
-     animation: recording-pulse 1.5s ease-in-out infinite;
-   }
- 
-   @keyframes recording-pulse {
-     0%, 100% {
-       box-shadow: 0 0 0 0 hsl(var(--recording) / 0.7);
-     }
-     50% {
-       box-shadow: 0 0 0 12px hsl(var(--recording) / 0);
-     }
-   }
- 
-   /* Glow effect for recording state */
-   .glow-recording {
-     box-shadow: 0 0 20px hsl(var(--recording-glow) / 0.4),
-                 0 0 40px hsl(var(--recording-glow) / 0.2);
-   }
- 
-   /* Trajectory glow */
-   .trajectory-glow {
-     filter: drop-shadow(0 0 3px hsl(var(--trajectory-glow)));
-   }
- 
-   /* Glass effect for cards */
-   .glass {
-     background: hsl(var(--card) / 0.8);
-     backdrop-filter: blur(12px);
-     border: 1px solid hsl(var(--border) / 0.5);
-   }
- 
-   /* Fade in animation */
-   .fade-in {
-     animation: fade-in 0.3s ease-out;
-   }
- 
-   @keyframes fade-in {
-     from {
-       opacity: 0;
-       transform: translateY(10px);
-     }
-     to {
-       opacity: 1;
-       transform: translateY(0);
-     }
-   }
- }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mouse Motion Recorder - Liquid Glass Design System
+   Apple iOS inspired: translucent, soft, elegant
+   All colors in HSL format */
+
+@layer base {
+  :root {
+    /* Liquid Glass Dark - iOS inspired */
+    --background: 225 25% 6%;
+    --foreground: 0 0% 98%;
+
+    --card: 225 20% 12%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 225 20% 10%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Soft blue-purple accent */
+    --primary: 220 90% 65%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 225 15% 18%;
+    --secondary-foreground: 0 0% 90%;
+
+    --muted: 225 15% 16%;
+    --muted-foreground: 220 10% 55%;
+
+    --accent: 280 70% 65%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Recording state - vibrant pink-red */
+    --recording: 340 90% 60%;
+    --recording-glow: 340 100% 65%;
+
+    /* Success state - fresh green */
+    --success: 145 70% 50%;
+    --success-foreground: 0 0% 100%;
+
+    /* Grid and canvas */
+    --grid: 225 15% 15%;
+    --grid-accent: 225 15% 25%;
+    --canvas: 225 25% 8%;
+    
+    /* Trajectory gradient - cold to hot */
+    --trajectory-cold: 200 90% 55%;
+    --trajectory-warm: 30 95% 55%;
+    --trajectory-hot: 350 90% 55%;
+    --trajectory: 220 90% 65%;
+    --trajectory-glow: 220 100% 70%;
+    --center-point: 50 95% 60%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 225 15% 20%;
+    --input: 225 15% 14%;
+    --ring: 220 90% 65%;
+
+    --radius: 1.25rem;
+
+    /* Liquid Glass effects */
+    --glass-bg: 225 25% 12% / 0.6;
+    --glass-border: 0 0% 100% / 0.08;
+    --glass-shine: 0 0% 100% / 0.05;
+    --glass-blur: 20px;
+    
+    /* Shadows and effects */
+    --shadow-glow: 0 0 40px hsl(220 90% 65% / 0.25);
+    --shadow-card: 0 8px 32px hsl(225 25% 0% / 0.4);
+    --shadow-soft: 0 4px 24px hsl(225 25% 0% / 0.3);
+  }
+
+  .light {
+    --background: 220 20% 97%;
+    --foreground: 225 25% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 225 25% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 25% 10%;
+    --primary: 220 90% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 15% 92%;
+    --secondary-foreground: 225 25% 15%;
+    --muted: 220 15% 94%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 280 70% 55%;
+    --accent-foreground: 0 0% 100%;
+    --recording: 340 90% 55%;
+    --recording-glow: 340 100% 60%;
+    --success: 145 70% 45%;
+    --success-foreground: 0 0% 100%;
+    --grid: 220 15% 90%;
+    --grid-accent: 220 15% 82%;
+    --canvas: 220 15% 95%;
+    --trajectory-cold: 200 85% 50%;
+    --trajectory-warm: 30 90% 50%;
+    --trajectory-hot: 350 85% 50%;
+    --trajectory: 220 85% 55%;
+    --trajectory-glow: 220 95% 60%;
+    --center-point: 50 90% 55%;
+    --destructive: 0 75% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 88%;
+    --input: 220 15% 92%;
+    --ring: 220 90% 55%;
+    --glass-bg: 0 0% 100% / 0.7;
+    --glass-border: 0 0% 0% / 0.06;
+    --glass-shine: 0 0% 100% / 0.5;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Custom scrollbar - Liquid style */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.2);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
+  }
+}
+
+@layer utilities {
+  /* Liquid Glass effect */
+  .glass {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid hsl(var(--glass-border));
+    box-shadow: 
+      inset 0 1px 0 0 hsl(var(--glass-shine)),
+      var(--shadow-soft);
+  }
+
+  .glass-card {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid hsl(var(--glass-border));
+    box-shadow: 
+      inset 0 1px 0 0 hsl(var(--glass-shine)),
+      0 8px 32px hsl(225 25% 0% / 0.25);
+  }
+
+  .glass-button {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--glass-border));
+    box-shadow: 
+      inset 0 1px 0 0 hsl(var(--glass-shine)),
+      0 2px 8px hsl(225 25% 0% / 0.2);
+    transition: all 0.2s ease;
+  }
+
+  .glass-button:hover {
+    background: hsl(225 20% 18% / 0.7);
+    box-shadow: 
+      inset 0 1px 0 0 hsl(var(--glass-shine)),
+      0 4px 16px hsl(225 25% 0% / 0.3);
+  }
+
+  /* Recording pulse animation - softer */
+  .recording-pulse {
+    animation: recording-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes recording-pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 hsl(var(--recording) / 0.6);
+    }
+    50% {
+      box-shadow: 0 0 0 16px hsl(var(--recording) / 0);
+    }
+  }
+
+  /* Glow effect for recording state */
+  .glow-recording {
+    box-shadow: 
+      0 0 30px hsl(var(--recording-glow) / 0.3),
+      0 0 60px hsl(var(--recording-glow) / 0.15),
+      inset 0 0 20px hsl(var(--recording-glow) / 0.1);
+  }
+
+  /* Trajectory glow - thermal gradient */
+  .trajectory-glow {
+    filter: drop-shadow(0 0 4px hsl(var(--trajectory-glow)));
+  }
+
+  /* Fade in animation - smoother */
+  .fade-in {
+    animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Shimmer effect for highlights */
+  .shimmer {
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      hsl(var(--glass-shine)) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Soft gradient backgrounds */
+  .gradient-mesh {
+    background: 
+      radial-gradient(ellipse at 20% 0%, hsl(280 70% 65% / 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, hsl(220 90% 65% / 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 0% 50%, hsl(340 90% 60% / 0.08) 0%, transparent 50%);
+  }
+}
