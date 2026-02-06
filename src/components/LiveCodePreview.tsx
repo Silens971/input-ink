@@ -57,8 +57,8 @@
      return `${(ms / 1000).toFixed(2)}s`;
    };
  
-   return (
-     <div className="bg-card rounded-xl p-6 space-y-4 border border-border fade-in">
+    return (
+      <div className="glass-card rounded-2xl p-6 space-y-4 fade-in">
        <div className="flex items-center justify-between">
          <h3 className="font-semibold text-lg flex items-center gap-2">
            <Code className="w-5 h-5 text-primary" />
@@ -67,14 +67,14 @@
              <Sparkles className="w-4 h-4 text-primary animate-pulse" />
            )}
          </h3>
-         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-           <span className="px-2 py-1 bg-secondary/50 rounded font-mono">
-             {pointCount} pts
-           </span>
-           <span className="px-2 py-1 bg-secondary/50 rounded font-mono">
-             {formatDuration(duration)}
-           </span>
-         </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="px-2 py-1 glass rounded-lg font-mono">
+              {pointCount} pts
+            </span>
+            <span className="px-2 py-1 glass rounded-lg font-mono">
+              {formatDuration(duration)}
+            </span>
+          </div>
        </div>
  
        <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -83,43 +83,43 @@
            <TabsTrigger value="lua">Lua</TabsTrigger>
          </TabsList>
  
-         <TabsContent value="ahk" className="mt-4">
-           <div 
-             className={cn(
-               "bg-muted rounded-lg p-4 max-h-80 overflow-auto transition-all duration-300",
-               hasChanged && "ring-2 ring-primary/50 bg-primary/5"
-             )}
-           >
-             <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
-               {codeAHK}
-             </pre>
-           </div>
-         </TabsContent>
+          <TabsContent value="ahk" className="mt-4">
+            <div 
+              className={cn(
+                "glass rounded-xl p-4 max-h-80 overflow-auto transition-all duration-300",
+                hasChanged && "ring-2 ring-primary/50"
+              )}
+            >
+              <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
+                {codeAHK}
+              </pre>
+            </div>
+          </TabsContent>
  
-         <TabsContent value="lua" className="mt-4">
-           <div 
-             className={cn(
-               "bg-muted rounded-lg p-4 max-h-80 overflow-auto transition-all duration-300",
-               hasChanged && "ring-2 ring-primary/50 bg-primary/5"
-             )}
-           >
-             <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
-               {codeLua}
-             </pre>
-           </div>
-         </TabsContent>
+          <TabsContent value="lua" className="mt-4">
+            <div 
+              className={cn(
+                "glass rounded-xl p-4 max-h-80 overflow-auto transition-all duration-300",
+                hasChanged && "ring-2 ring-primary/50"
+              )}
+            >
+              <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
+                {codeLua}
+              </pre>
+            </div>
+          </TabsContent>
        </Tabs>
  
-       <div className="flex gap-3">
-         <Button onClick={copyToClipboard} variant="secondary" className="flex-1 gap-2">
-           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-           {copied ? 'Copiado!' : 'Copiar'}
-         </Button>
-         <Button onClick={downloadFile} className="flex-1 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground">
-           <Download className="w-4 h-4" />
-           Baixar
-         </Button>
-       </div>
+        <div className="flex gap-3">
+          <Button onClick={copyToClipboard} variant="secondary" className="flex-1 gap-2 glass-button">
+            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            {copied ? 'Copiado!' : 'Copiar'}
+          </Button>
+          <Button onClick={downloadFile} className="flex-1 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Download className="w-4 h-4" />
+            Baixar
+          </Button>
+        </div>
  
        <p className="text-xs text-muted-foreground text-center">
          O código reflete exatamente o estado atual das edições

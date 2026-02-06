@@ -22,11 +22,11 @@ export function EditPanel({ editSettings, onUpdateSetting, onReset }: EditPanelP
     editSettings.trimEnd !== 100;
 
    return (
-    <div className="bg-card rounded-xl border border-border fade-in overflow-hidden">
+    <div className="glass-card rounded-2xl fade-in overflow-hidden">
       {/* Header - always visible */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-4 flex items-center justify-between hover:bg-secondary/30 transition-colors"
+        className="w-full p-4 flex items-center justify-between hover:bg-secondary/20 transition-colors"
       >
         <h3 className="font-semibold flex items-center gap-2">
            <Wand2 className="w-5 h-5 text-primary" />
@@ -52,7 +52,7 @@ export function EditPanel({ editSettings, onUpdateSetting, onReset }: EditPanelP
         <div className="p-6 pt-2 space-y-6">
           {/* Reset button */}
           {hasChanges && (
-            <Button variant="outline" size="sm" onClick={onReset} className="w-full gap-2">
+            <Button variant="outline" size="sm" onClick={onReset} className="w-full gap-2 glass-button">
               <RotateCcw className="w-4 h-4" />
               Resetar Alterações Espaciais
             </Button>
