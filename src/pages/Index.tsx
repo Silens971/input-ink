@@ -118,7 +118,6 @@ const Index = () => {
 
   const handleImageMouseDown = useCallback((e: React.MouseEvent) => {
     if (!refImage || refImage.locked) return;
-    e.preventDefault();
     e.stopPropagation();
     setIsDraggingImage(true);
     setDragStart({ x: e.clientX - refImage.x, y: e.clientY - refImage.y });
@@ -126,7 +125,6 @@ const Index = () => {
 
   const handleImageResize = useCallback((e: React.MouseEvent) => {
     if (!refImage || refImage.locked) return;
-    e.preventDefault();
     e.stopPropagation();
     setIsResizingImage(true);
     setDragStart({ x: e.clientX, y: e.clientY });

@@ -291,6 +291,8 @@ export function ReferenceImageControls({
       <input
         ref={fileInputRef}
         type="file"
+        id="reference-image-input"
+        name="reference-image"
         accept="image/png,image/jpeg,image/jpg"
         onChange={handleFileSelect}
         className="hidden"
