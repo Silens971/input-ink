@@ -63,7 +63,7 @@ const Index = () => {
   const [isResizingImage, setIsResizingImage] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  const canvasSize = 500;
+  const canvasSize = 700;
 
   const { shortcuts, isConfiguring, setIsConfiguring } = useKeyboardShortcuts(
     startRecording,
