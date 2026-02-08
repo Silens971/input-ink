@@ -66,7 +66,6 @@ export function ReferenceImage({ canvasSize }: ReferenceImageProps) {
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (!image || image.locked) return;
     
-    e.preventDefault();
     e.stopPropagation();
     
     const rect = (e.target as HTMLElement).closest('.reference-container')?.getBoundingClientRect();
@@ -96,7 +95,6 @@ export function ReferenceImage({ canvasSize }: ReferenceImageProps) {
 
   const handleResizeStart = useCallback((e: React.MouseEvent) => {
     if (!image || image.locked) return;
-    e.preventDefault();
     e.stopPropagation();
     setIsResizing(true);
     setDragStart({ x: e.clientX, y: e.clientY });
@@ -139,6 +137,8 @@ export function ReferenceImage({ canvasSize }: ReferenceImageProps) {
         <input
           ref={fileInputRef}
           type="file"
+          id="ref-image-upload"
+          name="ref-image-upload"
           accept="image/png,image/jpeg,image/jpg"
           onChange={handleFileSelect}
           className="hidden"
