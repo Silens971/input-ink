@@ -281,6 +281,9 @@ export function ReferenceImageControls({
       img.src = event.target?.result as string;
     };
     reader.readAsDataURL(file);
+    
+    // Reset input to allow re-uploading the same file
+    e.target.value = '';
   };
 
   return (

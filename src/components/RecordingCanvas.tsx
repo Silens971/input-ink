@@ -10,7 +10,7 @@
  
  export const RecordingCanvas = forwardRef<HTMLDivElement, RecordingCanvasProps>(
    ({ state, points, currentPosition }, ref) => {
-     const canvasSize = 500;
+     const canvasSize = 700;
      const center = canvasSize / 2;
      const gridStep = 50;
  
