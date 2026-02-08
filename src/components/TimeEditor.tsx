@@ -143,14 +143,16 @@
        <div className="space-y-2">
          <span className="text-sm font-medium">Definir Duração Alvo</span>
          <div className="flex gap-2">
-           <Input
-             type="number"
-             step="0.1"
-             min="0.1"
-             placeholder="Segundos"
-             className="font-mono"
-             onChange={(e) => handleDurationInput(e.target.value)}
-           />
+            <Input
+              type="number"
+              id="target-duration-input"
+              name="target-duration"
+              step="0.1"
+              min="0.1"
+              placeholder="Segundos"
+              className="font-mono"
+              onChange={(e) => handleDurationInput(e.target.value)}
+            />
            <span className="flex items-center text-sm text-muted-foreground">segundos</span>
          </div>
        </div>
