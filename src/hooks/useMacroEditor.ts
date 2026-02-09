@@ -137,7 +137,17 @@
       dataPoints.push(`${x},${y},${delay}`);
     });
     
-    const coordsString = dataPoints.join('|');
+    // Break coords into chunks of ~80 chars for readability
+    const fullString = dataPoints.join('|');
+    const chunkSize = 60;
+    const chunks: string[] = [];
+    for (let i = 0; i < fullString.length; i += chunkSize) {
+      chunks.push(fullString.slice(i, i + chunkSize));
+    }
+    const coordsLines = chunks.length > 1 
+      ? 'coords := ""\n' + chunks.map(c => `coords .= "${c}"`).join('\n')
+      : `coords := "${fullString}"`;
+    
     const duration = points.length > 0 ? Math.round(points[points.length - 1].timestamp) : 0;
     
     const lines = [
@@ -154,7 +164,7 @@
       'SetBatchLines, -1',
       'CoordMode, Mouse, Screen',
       '',
-      `coords := "${coordsString}"`,
+      coordsLines,
       '',
       'F5::',
       '  MouseGetPos, startX, startY',
@@ -182,7 +192,7 @@
     
     const duration = points.length > 0 ? Math.round(points[points.length - 1].timestamp) : 0;
     
-    // Build compacted data table: { {x,y,delay}, {x,y,delay}, ... }
+    // Build compacted data table with line breaks for readability
     let lastTimestamp = 0;
     const moveEntries: string[] = [];
     
@@ -194,6 +204,13 @@
       moveEntries.push(`{${x},${y},${delay}}`);
     });
     
+    // Break into rows of 8 entries for readability
+    const entriesPerRow = 8;
+    const rows: string[] = [];
+    for (let i = 0; i < moveEntries.length; i += entriesPerRow) {
+      rows.push('  ' + moveEntries.slice(i, i + entriesPerRow).join(','));
+    }
+    
     const lines = [
       '-- ===================================',
       '-- Mouse Movement Script (Logitech)',
@@ -204,7 +221,7 @@
       '-- Duração: ' + (duration / 1000).toFixed(2) + 's',
       '',
       'local moves = {',
-      '  ' + moveEntries.join(','),
+      rows.join(',\n'),
       '}',
       '',
       'function OnEvent(event, arg)',
