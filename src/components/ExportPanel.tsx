@@ -1,16 +1,19 @@
- import { useState } from 'react';
- import { RecordingData } from '@/types/recording';
- import { Button } from '@/components/ui/button';
- import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
- import { Download, Copy, Check } from 'lucide-react';
- 
- interface ExportPanelProps {
-   recordingData: RecordingData;
- }
- 
- export function ExportPanel({ recordingData }: ExportPanelProps) {
-   const [copied, setCopied] = useState(false);
-   const [activeTab, setActiveTab] = useState('ahk');
+import { useState } from 'react';
+import { RecordingData, ExecutionShortcut } from '@/types/recording';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Download, Copy, Check } from 'lucide-react';
+
+interface ExportPanelProps {
+  recordingData: RecordingData;
+  executionShortcut?: ExecutionShortcut;
+}
+
+const DEFAULT_SHORTCUT: ExecutionShortcut = { type: 'keyboard', key: 'F5' };
+
+export function ExportPanel({ recordingData, executionShortcut = DEFAULT_SHORTCUT }: ExportPanelProps) {
+  const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState('ahk');
  
   const generateAutoHotkey = (): string => {
     // Build array entries: [dx, dy, delay]
@@ -36,6 +39,11 @@
       ? Math.round(recordingData.points[recordingData.points.length - 1].timestamp) 
       : 0;
     
+    // Determine hotkey based on shortcut type
+    const hotkey = executionShortcut.type === 'keyboard' 
+      ? executionShortcut.key 
+      : executionShortcut.key === '4' ? 'XButton1' : 'XButton2';
+    
     const lines = [
       '; ===================================',
       '; Mouse Movement Script (AHK v2)',
@@ -43,6 +51,7 @@
       '; ===================================',
       '; Pontos: ' + recordingData.points.length,
       '; Duração: ' + (duration / 1000).toFixed(2) + 's',
+      '; Atalho: ' + hotkey + ' (segurar para executar)',
       '',
       '#Requires AutoHotkey v2.0',
       '#SingleInstance Force',
@@ -67,7 +76,7 @@
       '  isPlaying := false',
       '}',
       '',
-      'F5:: {',
+      `~${hotkey}:: {`,
       '  global isPlaying',
       '  if isPlaying',
       '    return',
@@ -75,7 +84,7 @@
       '  PlayPattern(pattern)',
       '}',
       '',
-      'Escape:: {',
+      `~${hotkey} Up:: {`,
       '  global isPlaying',
       '  isPlaying := false',
       '}',
@@ -108,6 +117,11 @@
       rows.push('  ' + entries.slice(i, i + entriesPerRow).join(','));
     }
     
+    // Determine button number for Lua
+    const buttonNum = executionShortcut.type === 'mouse' 
+      ? executionShortcut.key 
+      : '5'; // Default to mouse 5 if keyboard is selected
+    
     const lines = [
       '-- ===================================',
       '-- Mouse Movement Script (Logitech)',
@@ -115,6 +129,7 @@
       '-- ===================================',
       '-- Pontos: ' + recordingData.points.length,
       '-- Duração: ' + (duration / 1000).toFixed(2) + 's',
+      '-- Botão: Mouse ' + buttonNum + ' (segurar para executar)',
       '',
       'local pattern = {',
       rows.join(',\n'),
@@ -130,7 +145,7 @@
       'end',
       '',
       'function OnEvent(event, arg)',
-      '  if event == "MOUSE_BUTTON_PRESSED" and arg == 5 then',
+      `  if event == "MOUSE_BUTTON_PRESSED" and arg == ${buttonNum} then`,
       '    PlayPattern(pattern, arg)',
       '  end',
       'end',
