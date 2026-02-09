@@ -10,6 +10,7 @@ import { TimeEditor } from '@/components/TimeEditor';
 import { LiveCodePreview } from '@/components/LiveCodePreview';
 import { FAQPanel } from '@/components/FAQPanel';
 import { ReferenceImageControls } from '@/components/ReferenceImage';
+import { ExecutionShortcutSelector } from '@/components/ExecutionShortcutSelector';
 import { MousePointer2, Crosshair, ImagePlus, Lock, Unlock, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -46,6 +47,7 @@ const Index = () => {
     segments,
     selectedSegment,
     derivedData,
+    executionShortcut,
     initializeFromRecording,
     updateEditSetting,
     updateTimeMultiplier,
@@ -55,6 +57,7 @@ const Index = () => {
     updateSegmentMultiplier,
     removeSegment,
     setSelectedSegment,
+    setExecutionShortcut,
   } = useMacroEditor(recordingData);
 
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -306,6 +309,12 @@ const Index = () => {
             {/* Edit and Export panels */}
             {state === 'completed' && derivedData && (
               <>
+                {/* Execution Shortcut Selector */}
+                <ExecutionShortcutSelector
+                  shortcut={executionShortcut}
+                  onShortcutChange={setExecutionShortcut}
+                />
+
                 {/* Time Editor */}
                 <TimeEditor
                   timeSettings={timeSettings}

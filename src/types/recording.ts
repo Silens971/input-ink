@@ -48,6 +48,11 @@ export interface MacroState {
   selectedSegment: number | null;
 }
 
+export interface ExecutionShortcut {
+  type: 'keyboard' | 'mouse';
+  key: string;
+}
+
 export interface DerivedMacroData {
   points: MousePoint[];
   duration: number;
