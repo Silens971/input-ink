@@ -61,12 +61,19 @@
      setState('completed');
    }, [state, points]);
  
-   const reset = useCallback(() => {
-     setPoints([]);
-     setRecordingData(null);
-     setCurrentPosition({ x: 0, y: 0 });
-     setState('idle');
-   }, []);
+  const reset = useCallback(() => {
+    setPoints([]);
+    setRecordingData(null);
+    setCurrentPosition({ x: 0, y: 0 });
+    setState('idle');
+  }, []);
+
+  const importRecording = useCallback((data: RecordingData) => {
+    setPoints(data.points);
+    setRecordingData(data);
+    setCurrentPosition({ x: 0, y: 0 });
+    setState('completed');
+  }, []);
  
    useEffect(() => {
      if (state === 'recording') {
@@ -81,15 +88,16 @@
      return () => window.removeEventListener('resize', updateCenter);
    }, [updateCenter]);
  
-   return {
-     state,
-     points,
-     recordingData,
-     currentPosition,
-     canvasRef,
-     startRecording,
-     stopRecording,
-     reset,
-     setRecordingData,
-   };
- }
+  return {
+    state,
+    points,
+    recordingData,
+    currentPosition,
+    canvasRef,
+    startRecording,
+    stopRecording,
+    reset,
+    importRecording,
+    setRecordingData,
+  };
+}
