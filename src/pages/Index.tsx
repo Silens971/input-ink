@@ -11,9 +11,7 @@ import { LiveCodePreview } from '@/components/LiveCodePreview';
 import { FAQPanel } from '@/components/FAQPanel';
 import { ReferenceImageControls } from '@/components/ReferenceImage';
 import { ExecutionShortcutSelector } from '@/components/ExecutionShortcutSelector';
-import { MousePointer2, Crosshair, ImagePlus, Lock, Unlock, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
+import { MousePointer2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ReferenceImageState {
@@ -66,7 +64,7 @@ const Index = () => {
   const [isResizingImage, setIsResizingImage] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  const canvasSize = 700;
+  const canvasSize = 1000;
 
   const { shortcuts, isConfiguring, setIsConfiguring } = useKeyboardShortcuts(
     startRecording,
@@ -162,217 +160,185 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground gradient-mesh">
-      {/* Header */}
+    <div className="min-h-screen bg-background text-foreground gradient-mesh flex flex-col">
+      {/* Compact Header */}
       <header className="border-b border-border/50 glass sticky top-0 z-10">
-        <div className="container mx-auto px-6 py-4">
+        <div className="px-4 py-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-primary/15 rounded-2xl">
-                <MousePointer2 className="w-6 h-6 text-primary" />
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-primary/15 rounded-xl">
+                <MousePointer2 className="w-5 h-5 text-primary" />
               </div>
-              <div>
-                <h1 className="text-xl font-bold">Mouse Motion Recorder</h1>
-                <p className="text-sm text-muted-foreground">
-                  Grave, visualize e exporte movimentos do mouse
-                </p>
-              </div>
+              <h1 className="text-base font-bold">Mouse Motion Recorder</h1>
             </div>
             
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2 glass px-3 py-1.5 rounded-xl">
-                <Crosshair className="w-4 h-4 text-primary" />
-                <span>Centro (0,0) = origem</span>
-              </div>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="font-medium">
+                {state === 'idle' && 'Pronto'}
+                {state === 'recording' && 'Gravando...'}
+                {state === 'completed' && 'Concluído'}
+              </span>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main content */}
-      <main className="container mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-[1fr_400px] gap-8">
-          {/* Left: Canvas and visualization */}
-          <div className="space-y-6">
-            {/* Reference Image Controls */}
-            <div className="glass-card rounded-2xl p-4">
-              <div className="flex items-center gap-3 flex-wrap">
-                <ReferenceImageControls
-                  onImageLoad={handleImageLoad}
-                  imageState={refImage ? { opacity: refImage.opacity, locked: refImage.locked } : null}
-                  onUpdateOpacity={(opacity) => setRefImage(prev => prev ? { ...prev, opacity } : null)}
-                  onToggleLock={() => setRefImage(prev => prev ? { ...prev, locked: !prev.locked } : null)}
-                  onRemove={() => setRefImage(null)}
-                />
-              </div>
-            </div>
+      {/* Main: Canvas takes most of the space */}
+      <main className="flex-1 flex flex-col lg:flex-row gap-0 min-h-0">
+        {/* Canvas area - dominant */}
+        <div className="flex-1 flex flex-col min-h-0 relative">
+          {/* Reference Image Controls - floating */}
+          <div className="absolute top-3 left-3 z-10 glass rounded-xl p-2">
+            <ReferenceImageControls
+              onImageLoad={handleImageLoad}
+              imageState={refImage ? { opacity: refImage.opacity, locked: refImage.locked } : null}
+              onUpdateOpacity={(opacity) => setRefImage(prev => prev ? { ...prev, opacity } : null)}
+              onToggleLock={() => setRefImage(prev => prev ? { ...prev, locked: !prev.locked } : null)}
+              onRemove={() => setRefImage(null)}
+            />
+          </div>
 
-            {/* Recording Canvas */}
-            <div className="flex flex-col items-center">
-              <div className="mb-4 text-center">
-                <h2 className="text-lg font-medium text-muted-foreground">
-                  {state === 'idle' && 'Área de Captura'}
-                  {state === 'recording' && 'Movimente o mouse dentro da área'}
-                  {state === 'completed' && 'Gravação Finalizada'}
-                </h2>
-              </div>
-              
-              <div 
-                className="relative"
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-              >
-                <RecordingCanvas
-                  ref={canvasRef}
-                  state={state}
-                  points={points}
-                  currentPosition={currentPosition}
-                />
-                
-                {/* Reference Image Overlay */}
-                {refImage && (
-                  <div
-                    className={cn(
-                      "absolute transition-shadow pointer-events-auto",
-                      !refImage.locked && "cursor-move",
-                      isDraggingImage && "ring-2 ring-primary/50 rounded"
-                    )}
-                    style={{
-                      left: refImage.x,
-                      top: refImage.y,
-                      width: refImage.width,
-                      height: refImage.height,
-                      opacity: refImage.opacity,
-                      zIndex: 5,
-                    }}
-                    onMouseDown={handleImageMouseDown}
-                  >
-                    <img
-                      src={refImage.src}
-                      alt="Reference"
-                      className="w-full h-full object-contain select-none pointer-events-none"
-                      draggable={false}
-                    />
-                    
-                    {/* Resize handle */}
-                    {!refImage.locked && (
-                      <div
-                        className="absolute bottom-0 right-0 w-5 h-5 bg-primary/80 cursor-se-resize rounded-tl-lg flex items-center justify-center"
-                        onMouseDown={handleImageResize}
-                      >
-                        <div className="w-2 h-2 border-r-2 border-b-2 border-white/80" />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Trajectory Viewer */}
-            {state === 'completed' && derivedData && derivedData.points.length > 1 && (
-              <TrajectoryViewer 
-                recordingData={{
-                  points: derivedData.points,
-                  startTime: recordingData?.startTime || 0,
-                  endTime: recordingData?.endTime || 0,
-                  duration: derivedData.duration,
-                }} 
+          <div 
+            className="flex-1 p-3 min-h-0 flex items-center justify-center"
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
+            <div className="relative w-full h-full max-w-[calc(100vh-120px)] mx-auto">
+              <RecordingCanvas
+                ref={canvasRef}
+                state={state}
+                points={points}
+                currentPosition={currentPosition}
+                className="w-full h-full"
               />
-            )}
+              
+              {/* Reference Image Overlay */}
+              {refImage && (
+                <div
+                  className={cn(
+                    "absolute transition-shadow pointer-events-auto",
+                    !refImage.locked && "cursor-move",
+                    isDraggingImage && "ring-2 ring-primary/50 rounded"
+                  )}
+                  style={{
+                    left: refImage.x,
+                    top: refImage.y,
+                    width: refImage.width,
+                    height: refImage.height,
+                    opacity: refImage.opacity,
+                    zIndex: 5,
+                  }}
+                  onMouseDown={handleImageMouseDown}
+                >
+                  <img
+                    src={refImage.src}
+                    alt="Reference"
+                    className="w-full h-full object-contain select-none pointer-events-none"
+                    draggable={false}
+                  />
+                  
+                  {!refImage.locked && (
+                    <div
+                      className="absolute bottom-0 right-0 w-5 h-5 bg-primary/80 cursor-se-resize rounded-tl-lg flex items-center justify-center"
+                      onMouseDown={handleImageResize}
+                    >
+                      <div className="w-2 h-2 border-r-2 border-b-2 border-white/80" />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
-            {/* Live Code Preview */}
-            {state === 'completed' && derivedData && (
+        {/* Right sidebar: Controls */}
+        <div className="lg:w-[380px] lg:border-l border-border/50 lg:overflow-y-auto p-4 space-y-4">
+          <ControlPanel
+            state={state}
+            duration={state === 'recording' ? elapsedTime : (recordingData?.duration || 0)}
+            pointCount={state === 'recording' ? points.length : (recordingData?.points.length || 0)}
+            shortcuts={shortcuts}
+            isConfiguring={isConfiguring}
+            onStart={startRecording}
+            onStop={stopRecording}
+            onReset={reset}
+            onConfigureShortcut={setIsConfiguring}
+          />
+
+          {/* Trajectory Viewer */}
+          {state === 'completed' && derivedData && derivedData.points.length > 1 && (
+            <TrajectoryViewer 
+              recordingData={{
+                points: derivedData.points,
+                startTime: recordingData?.startTime || 0,
+                endTime: recordingData?.endTime || 0,
+                duration: derivedData.duration,
+              }} 
+            />
+          )}
+
+          {/* Edit and Export panels */}
+          {state === 'completed' && derivedData && (
+            <>
+              <ExecutionShortcutSelector
+                shortcut={executionShortcut}
+                onShortcutChange={setExecutionShortcut}
+              />
+
+              <TimeEditor
+                timeSettings={timeSettings}
+                segments={segments}
+                selectedSegment={selectedSegment}
+                onUpdateMultiplier={updateTimeMultiplier}
+                onSetTargetDuration={setTargetDuration}
+                onResetToOriginal={resetToOriginal}
+                onUpdateSegmentMultiplier={updateSegmentMultiplier}
+                onSelectSegment={setSelectedSegment}
+                onRemoveSegment={removeSegment}
+              />
+
+              <EditPanel
+                editSettings={editSettings}
+                onUpdateSetting={updateEditSetting}
+                onReset={resetToOriginal}
+              />
+
               <LiveCodePreview
                 codeAHK={derivedData.codeAHK}
                 codeLua={derivedData.codeLua}
                 duration={derivedData.duration}
                 pointCount={derivedData.pointCount}
               />
-            )}
-          </div>
+            </>
+          )}
 
-          {/* Right: Controls */}
-          <div className="space-y-6">
-            <ControlPanel
-              state={state}
-              duration={state === 'recording' ? elapsedTime : (recordingData?.duration || 0)}
-              pointCount={state === 'recording' ? points.length : (recordingData?.points.length || 0)}
-              shortcuts={shortcuts}
-              isConfiguring={isConfiguring}
-              onStart={startRecording}
-              onStop={stopRecording}
-              onReset={reset}
-              onConfigureShortcut={setIsConfiguring}
-            />
-
-            {/* Edit and Export panels */}
-            {state === 'completed' && derivedData && (
-              <>
-                {/* Execution Shortcut Selector */}
-                <ExecutionShortcutSelector
-                  shortcut={executionShortcut}
-                  onShortcutChange={setExecutionShortcut}
-                />
-
-                {/* Time Editor */}
-                <TimeEditor
-                  timeSettings={timeSettings}
-                  segments={segments}
-                  selectedSegment={selectedSegment}
-                  onUpdateMultiplier={updateTimeMultiplier}
-                  onSetTargetDuration={setTargetDuration}
-                  onResetToOriginal={resetToOriginal}
-                  onUpdateSegmentMultiplier={updateSegmentMultiplier}
-                  onSelectSegment={setSelectedSegment}
-                  onRemoveSegment={removeSegment}
-                />
-
-                {/* Space Editor */}
-                <EditPanel
-                  editSettings={editSettings}
-                  onUpdateSetting={updateEditSetting}
-                  onReset={resetToOriginal}
-                />
-              </>
-            )}
-
-            {/* Instructions */}
-            {state === 'idle' && (
-              <div className="glass-card rounded-2xl p-6">
-                <h3 className="font-semibold mb-4">Como usar</h3>
-                <ol className="space-y-3 text-sm text-muted-foreground">
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">1</span>
-                    <span>Clique em <strong className="text-foreground">Iniciar Gravação</strong> ou pressione <kbd className="px-1.5 py-0.5 glass rounded text-xs">{shortcuts.startRecording}</kbd></span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">2</span>
-                    <span>Mova o mouse na área de captura. O centro representa (0,0)</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">3</span>
-                    <span>Clique em <strong className="text-foreground">Finalizar</strong> ou pressione <kbd className="px-1.5 py-0.5 glass rounded text-xs">{shortcuts.stopRecording}</kbd></span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">4</span>
-                    <span>Visualize, edite e exporte seu movimento como script</span>
-                  </li>
-                </ol>
-              </div>
-            )}
-          </div>
+          {/* Instructions */}
+          {state === 'idle' && (
+            <div className="glass-card rounded-2xl p-5">
+              <h3 className="font-semibold mb-3 text-sm">Como usar</h3>
+              <ol className="space-y-2 text-xs text-muted-foreground">
+                <li className="flex gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px] font-bold">1</span>
+                  <span>Clique em <strong className="text-foreground">Iniciar Gravação</strong> ou <kbd className="px-1 py-0.5 glass rounded text-[10px]">{shortcuts.startRecording}</kbd></span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px] font-bold">2</span>
+                  <span>Mova o mouse na área de captura</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px] font-bold">3</span>
+                  <span>Finalize com <kbd className="px-1 py-0.5 glass rounded text-[10px]">{shortcuts.stopRecording}</kbd></span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px] font-bold">4</span>
+                  <span>Edite e exporte como script</span>
+                </li>
+              </ol>
+            </div>
+          )}
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-border/50 mt-auto">
-        <div className="container mx-auto px-6 py-4">
-          <p className="text-sm text-muted-foreground text-center">
-            Ferramenta de automação e aprendizado • Criado por <span className="text-primary font-medium">Você</span>
-          </p>
-        </div>
-      </footer>
 
       {/* FAQ Panel */}
       <FAQPanel />
