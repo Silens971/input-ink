@@ -11,6 +11,7 @@ import { LiveCodePreview } from '@/components/LiveCodePreview';
 import { FAQPanel } from '@/components/FAQPanel';
 import { ReferenceImageControls } from '@/components/ReferenceImage';
 import { ExecutionShortcutSelector } from '@/components/ExecutionShortcutSelector';
+import { ImportTrajectory } from '@/components/ImportTrajectory';
 import { MousePointer2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -36,6 +37,7 @@ const Index = () => {
     startRecording,
     stopRecording,
     reset,
+    importRecording,
     setRecordingData,
   } = useMouseRecorder();
 
@@ -160,9 +162,9 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground gradient-mesh flex flex-col">
+    <div className="h-screen bg-background text-foreground gradient-mesh flex flex-col overflow-hidden">
       {/* Compact Header */}
-      <header className="border-b border-border/50 glass sticky top-0 z-10">
+      <header className="border-b border-border/50 glass z-10 flex-shrink-0">
         <div className="px-4 py-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -184,9 +186,9 @@ const Index = () => {
       </header>
 
       {/* Main: Canvas takes most of the space */}
-      <main className="flex-1 flex flex-col lg:flex-row gap-0 min-h-0">
-        {/* Canvas area - dominant */}
-        <div className="flex-1 flex flex-col min-h-0 relative">
+      <main className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden">
+        {/* Canvas area - constrained to viewport */}
+        <div className="flex-1 relative min-h-0 min-w-0 flex items-center justify-center p-3">
           {/* Reference Image Controls - floating */}
           <div className="absolute top-3 left-3 z-10 glass rounded-xl p-2">
             <ReferenceImageControls
@@ -199,56 +201,54 @@ const Index = () => {
           </div>
 
           <div 
-            className="flex-1 p-3 min-h-0 flex items-center justify-center"
+            className="relative h-full aspect-square max-h-full max-w-full"
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
           >
-            <div className="relative w-full h-full max-w-[calc(100vh-120px)] mx-auto">
-              <RecordingCanvas
-                ref={canvasRef}
-                state={state}
-                points={points}
-                currentPosition={currentPosition}
-                className="w-full h-full"
-              />
-              
-              {/* Reference Image Overlay */}
-              {refImage && (
-                <div
-                  className={cn(
-                    "absolute transition-shadow pointer-events-auto",
-                    !refImage.locked && "cursor-move",
-                    isDraggingImage && "ring-2 ring-primary/50 rounded"
-                  )}
-                  style={{
-                    left: refImage.x,
-                    top: refImage.y,
-                    width: refImage.width,
-                    height: refImage.height,
-                    opacity: refImage.opacity,
-                    zIndex: 5,
-                  }}
-                  onMouseDown={handleImageMouseDown}
-                >
-                  <img
-                    src={refImage.src}
-                    alt="Reference"
-                    className="w-full h-full object-contain select-none pointer-events-none"
-                    draggable={false}
-                  />
-                  
-                  {!refImage.locked && (
-                    <div
-                      className="absolute bottom-0 right-0 w-5 h-5 bg-primary/80 cursor-se-resize rounded-tl-lg flex items-center justify-center"
-                      onMouseDown={handleImageResize}
-                    >
-                      <div className="w-2 h-2 border-r-2 border-b-2 border-white/80" />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+            <RecordingCanvas
+              ref={canvasRef}
+              state={state}
+              points={points}
+              currentPosition={currentPosition}
+              className="h-full w-full"
+            />
+            
+            {/* Reference Image Overlay */}
+            {refImage && (
+              <div
+                className={cn(
+                  "absolute transition-shadow pointer-events-auto",
+                  !refImage.locked && "cursor-move",
+                  isDraggingImage && "ring-2 ring-primary/50 rounded"
+                )}
+                style={{
+                  left: refImage.x,
+                  top: refImage.y,
+                  width: refImage.width,
+                  height: refImage.height,
+                  opacity: refImage.opacity,
+                  zIndex: 5,
+                }}
+                onMouseDown={handleImageMouseDown}
+              >
+                <img
+                  src={refImage.src}
+                  alt="Reference"
+                  className="w-full h-full object-contain select-none pointer-events-none"
+                  draggable={false}
+                />
+                
+                {!refImage.locked && (
+                  <div
+                    className="absolute bottom-0 right-0 w-5 h-5 bg-primary/80 cursor-se-resize rounded-tl-lg flex items-center justify-center"
+                    onMouseDown={handleImageResize}
+                  >
+                    <div className="w-2 h-2 border-r-2 border-b-2 border-white/80" />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -264,9 +264,11 @@ const Index = () => {
             onStop={stopRecording}
             onReset={reset}
             onConfigureShortcut={setIsConfiguring}
-          />
+           />
 
-          {/* Trajectory Viewer */}
+          {/* Import Trajectory */}
+          <ImportTrajectory onImport={importRecording} />
+
           {state === 'completed' && derivedData && derivedData.points.length > 1 && (
             <TrajectoryViewer 
               recordingData={{
